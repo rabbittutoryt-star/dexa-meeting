@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07162d">
+  <meta name="description" content="DEXA Meeting - secure live meetings for @dexa.online accounts">
+  <title>DEXA Meeting</title>
+  <link rel="icon" href="/assets/dexa-meeting-logo.png">
+  <link rel="stylesheet" href="/styles.css?v=20260807-meeting-box-below-v1">
+  <script src="/app.js?v=20260807-meeting-box-below-v1" defer></script>
+</head>
+<body>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+  <main id="authView" class="auth-view">
+    <section class="auth-brand" aria-label="DEXA Meeting introduction">
+      <img src="/assets/dexa-meeting-logo.png" class="brand-logo brand-logo-large" alt="DEXA Meeting">
+      <div>
+        <p class="eyebrow">SECURE TEAM VIDEO</p>
+        <h1>Meet, share and collaborate live.</h1>
+        <p class="lead">Camera, microphone, screen sharing, reactions, chat and virtual backgrounds in one focused meeting space.</p>
+      </div>
+      <div class="feature-row" aria-label="Features">
+        <span>HD video</span><span>Screen share</span><span>Reactions</span><span>Backgrounds</span>
+      </div>
+    </section>
+
+    <section class="auth-panel" aria-label="Account access">
+      <div class="auth-card">
+        <div class="mobile-brand"><img src="/assets/dexa-meeting-logo.png" alt="DEXA Meeting"></div>
+        <div class="auth-toolbar">
+          <button id="cancelAddAccountButton" class="back-account-button hidden" type="button">← Back to current account</button>
+        </div>
+        <div class="segmented" role="tablist" aria-label="Account action">
+          <button id="loginTab" class="segment active" type="button" role="tab" aria-selected="true">Log in</button>
+          <button id="registerTab" class="segment" type="button" role="tab" aria-selected="false">Create account</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div>
+            <h2>Welcome back</h2>
+            <p>Continue with your DEXA account.</p>
+          </div>
+          <label class="field-label" for="loginUsername">DEXA email</label>
+          <div class="domain-field">
+            <input id="loginUsername" name="username" required autocomplete="username" maxlength="32" placeholder="username" aria-describedby="loginDomain">
+            <span id="loginDomain">@dexa.online</span>
+          </div>
+          <label class="field-label" for="loginPassword">Password</label>
+          <input id="loginPassword" name="password" type="password" required autocomplete="current-password" minlength="8" maxlength="72" placeholder="Enter password">
+          <p id="loginError" class="form-error" role="alert"></p>
+          <button class="primary-button full" type="submit">Log in to DEXA Meeting</button>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+          <div>
+            <h2>Create your account</h2>
+            <p>Choose a private <strong>@dexa.online</strong> identity.</p>
+          </div>
+          <label class="field-label" for="registerName">Full name</label>
+          <input id="registerName" name="name" required autocomplete="name" minlength="2" maxlength="60" placeholder="Your display name">
+          <label class="field-label" for="registerUsername">Choose DEXA email</label>
+          <div class="domain-field">
+            <input id="registerUsername" name="username" required autocomplete="username" minlength="2" maxlength="32" pattern="[A-Za-z0-9][A-Za-z0-9._-]{1,31}" placeholder="username" aria-describedby="registerDomain">
+            <span id="registerDomain">@dexa.online</span>
+          </div>
+          <label class="field-label" for="registerPassword">Password</label>
+          <input id="registerPassword" name="password" type="password" required autocomplete="new-password" minlength="8" maxlength="72" placeholder="At least 8 characters">
+          <p id="registerError" class="form-error" role="alert"></p>
+          <button class="primary-button full" type="submit">Create DEXA account</button>
+        </form>
+
+        <p class="fine-print">Only addresses ending in @dexa.online can sign in.</p>
+      </div>
+    </section>
+  </main>
+
+  <main id="lobbyView" class="lobby-view hidden">
+    <header class="topbar">
+      <img src="/assets/dexa-meeting-logo.png" class="brand-logo" alt="DEXA Meeting">
+      <div id="profileMenu" class="profile-menu">
+        <button id="profileMenuButton" class="profile-trigger" type="button" aria-haspopup="menu" aria-expanded="false">
+          <span class="profile-avatar-wrap">
+            <img id="accountAvatar" class="profile-avatar hidden" alt="">
+            <span id="accountAvatarFallback" class="profile-avatar profile-avatar-fallback">D</span>
+          </span>
+          <span class="account-copy"><strong id="accountName"></strong><span id="accountEmail"></span></span>
+          <span class="profile-chevron" aria-hidden="true">⌄</span>
+        </button>
+        <div id="profileDropdown" class="profile-dropdown hidden" role="menu">
+          <div class="profile-summary">
+            <span class="profile-avatar-wrap large-avatar-wrap">
+              <img id="dropdownAvatar" class="profile-avatar hidden" alt="">
+              <span id="dropdownAvatarFallback" class="profile-avatar profile-avatar-fallback">D</span>
+            </span>
+            <span><strong id="dropdownName"></strong><small id="dropdownEmail"></small></span>
+          </div>
+          <button id="editProfileButton" class="profile-action" type="button" role="menuitem"><span>✏️</span> Edit profile</button>
+          <div class="profile-divider"></div>
+          <p class="profile-section-title">Switch account</p>
+          <div id="accountList" class="account-list"></div>
+          <button id="addAccountButton" class="profile-action" type="button" role="menuitem"><span>＋</span> Add another account</button>
+          <div class="profile-divider"></div>
+          <button id="logoutCurrentButton" class="profile-action danger-action" type="button" role="menuitem"><span>↪</span> Log out current account</button>
+          <button id="logoutAllButton" class="profile-action danger-action" type="button" role="menuitem"><span>⏻</span> Log out all accounts</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="lobby-content">
+      <div class="lobby-copy">
+        <p class="eyebrow">DEXA MEETING</p>
+        <h1>Video meetings made simple.</h1>
+        <p class="lead">Start a new room or enter a meeting code shared by another DEXA user.</p>
+        <div class="lobby-actions">
+          <button id="newMeetingButton" class="primary-button large" type="button"><span aria-hidden="true">＋</span> New meeting</button>
+          <form id="joinForm" class="join-form">
+            <label class="sr-only" for="meetingCode">Meeting code</label>
+            <input id="meetingCode" autocomplete="off" placeholder="abc-defg-hjk" maxlength="12" spellcheck="false">
+            <button class="secondary-button" type="submit">Join</button>
+          </form>
+        </div>
+        <p id="lobbyError" class="form-error" role="alert"></p>
+
+        <div class="lobby-visual" aria-hidden="true">
+          <div class="visual-window">
+            <div class="visual-top"><span></span><span></span><span></span></div>
+            <div class="visual-grid">
+              <div class="mock-person"><i></i><b></b></div>
+              <div class="mock-person alt"><i></i><b></b></div>
+              <div class="mock-person green"><i></i><b></b></div>
+              <div class="mock-share"><span>DEXA</span></div>
+            </div>
+            <div class="visual-controls"><span>◉</span><span>▣</span><span>☻</span><span>↗</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lobby-features">
+      <article><strong>Live camera + mic</strong><span>Browser permission controls keep you in charge.</span></article>
+      <article><strong>Screen sharing</strong><span>Share a tab, window or your entire display.</span></article>
+      <article><strong>Virtual backgrounds</strong><span>Blur or replace your surroundings locally.</span></article>
+    </section>
+  </main>
+
+  <main id="meetingView" class="meeting-view hidden">
+    <header class="meeting-header">
+      <div class="meeting-brand"><img src="/assets/dexa-meeting-logo.png" alt="DEXA Meeting"><span id="connectionBadge" class="status-badge">Connecting</span></div>
+      <div class="room-information">
+        <span>Meeting code</span>
+        <button id="copyRoomButton" class="room-code" type="button" title="Copy meeting code"><strong id="roomCodeLabel"></strong><span>Copy</span></button>
+      </div>
+    </header>
+
+    <div class="meeting-layout">
+      <section class="stage" aria-label="Meeting videos">
+        <div id="videoGrid" class="video-grid"></div>
+        <div id="reactionLayer" class="reaction-layer" aria-live="polite"></div>
+      </section>
+
+      <aside id="sidePanel" class="side-panel hidden" aria-label="Meeting side panel">
+        <section class="side-profile-box" aria-label="Current profile">
+          <div class="side-profile-bar">
+            <span class="side-profile-avatar-wrap">
+              <img id="sideAccountAvatar" class="side-profile-avatar hidden" alt="">
+              <span id="sideAccountAvatarFallback" class="side-profile-avatar profile-avatar-fallback">D</span>
+            </span>
+            <span class="side-profile-copy">
+              <strong id="sideAccountName"></strong>
+              <small id="sideAccountEmail"></small>
+            </span>
+            <button id="sideEditProfileButton" class="side-profile-edit" type="button" aria-label="Edit profile" title="Edit profile">✏️</button>
+          </div>
+          <button id="sideManageAccountsButton" class="side-manage-accounts" type="button">＋ Add or switch account</button>
+        </section>
+
+        <div class="panel-tabs" role="tablist" aria-label="Meeting customization">
+          <button id="backgroundTab" class="panel-tab active" type="button" role="tab" aria-selected="true">Style</button>
+          <button id="chatTab" class="panel-tab" type="button" role="tab" aria-selected="false">Chat</button>
+          <button id="peopleTab" class="panel-tab" type="button" role="tab" aria-selected="false">People <span id="peopleCount">1</span></button>
+        </div>
+
+        <section id="chatPanel" class="panel-body hidden">
+          <div id="chatMessages" class="chat-messages" aria-live="polite">
+            <div class="empty-panel"><strong>Meeting chat</strong><span>Messages are visible to everyone in this room.</span></div>
+          </div>
+          <form id="chatForm" class="chat-form">
+            <label class="sr-only" for="chatInput">Message</label>
+            <input id="chatInput" maxlength="1000" autocomplete="off" placeholder="Message everyone">
+            <button type="submit" aria-label="Send message">➤</button>
+          </form>
+        </section>
+
+        <section id="peoplePanel" class="panel-body hidden">
+          <div id="peopleList" class="people-list"></div>
+        </section>
+
+        <section id="backgroundPanel" class="panel-body">
+          <div class="background-toolbar">
+            <span><strong>Customize background</strong><small>Changes apply to your live camera</small></span>
+            <span class="local-effect-badge">On device</span>
+          </div>
+          <div class="background-options">
+            <button class="background-option selected" data-background="none" type="button"><span class="bg-preview none-bg">✕</span><strong>None</strong></button>
+            <button class="background-option" data-background="blur" type="button"><span class="bg-preview blur-bg"></span><strong>Blur</strong></button>
+            <button class="background-option" data-background="ocean" type="button"><span class="bg-preview ocean-bg"></span><strong>Ocean</strong></button>
+            <button class="background-option" data-background="sunset" type="button"><span class="bg-preview sunset-bg"></span><strong>Sunset</strong></button>
+            <button class="background-option" data-background="studio" type="button"><span class="bg-preview studio-bg"></span><strong>Studio</strong></button>
+            <label class="background-option upload-option" for="backgroundUpload"><span class="bg-preview upload-bg">＋</span><strong>Upload</strong></label>
+            <input id="backgroundUpload" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp">
+          </div>
+          <p id="backgroundStatus" class="panel-note">Choose an effect. It works locally without loading a third-party background service.</p>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="control-bar">
+      <div class="control-group">
+        <button id="micButton" class="control-button" type="button" aria-label="Mute microphone" aria-pressed="false"><span class="control-icon mic-control-icon" aria-hidden="true">🎙️</span><span>Mic</span></button>
+        <button id="cameraButton" class="control-button" type="button"><span class="control-icon">📷</span><span>Camera</span></button>
+      </div>
+      <div class="control-group center-controls">
+        <button id="shareButton" class="control-button" type="button" aria-label="Share screen" aria-pressed="false"><span class="control-icon share-control-icon" aria-hidden="true"><img src="/assets/screenshare.png" alt=""></span><span>Share</span></button>
+        <div class="reaction-menu-wrap">
+          <button id="reactionButton" class="control-button" type="button" aria-expanded="false"><span class="control-icon">😊</span><span>React</span></button>
+          <div id="reactionMenu" class="reaction-menu hidden" aria-label="Reactions">
+            <button type="button">👍</button><button type="button">👏</button><button type="button">❤️</button><button type="button">😂</button><button type="button">🎉</button><button type="button">✋</button>
+          </div>
+        </div>
+        <button id="panelButton" class="control-button" type="button"><span class="control-icon">💬</span><span>Panel</span></button>
+        <button id="leaveButton" class="control-button danger" type="button"><span class="control-icon">☎</span><span>Leave</span></button>
+      </div>
+      <div class="meeting-clock"><span id="meetingTime">00:00</span></div>
+    </footer>
+  </main>
+
+
+  <dialog id="profileDialog" class="app-dialog profile-dialog">
+    <form id="profileForm">
+      <div class="profile-editor-avatar">
+        <img id="profileAvatarPreview" class="profile-edit-image hidden" alt="Profile picture preview">
+        <span id="profileAvatarFallback" class="profile-edit-image profile-avatar-fallback">D</span>
+        <label class="avatar-upload-button" for="profileAvatarInput">Upload or change photo</label>
+        <input id="profileAvatarInput" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+        <button id="removeProfileAvatarButton" class="remove-avatar-button" type="button">Remove photo</button>
+      </div>
+      <h2>Edit profile</h2>
+      <label class="field-label" for="profileNameInput">Display name</label>
+      <input id="profileNameInput" required minlength="2" maxlength="60" autocomplete="name">
+      <label class="field-label" for="profileEmailInput">DEXA email</label>
+      <input id="profileEmailInput" readonly>
+      <p id="profileError" class="form-error" role="alert"></p>
+      <div class="dialog-actions"><button id="cancelProfileButton" class="ghost-button" type="button">Cancel</button><button class="primary-button" type="submit">Save changes</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="permissionDialog" class="app-dialog">
+    <form method="dialog">
+      <div class="dialog-icon">🎥</div>
+      <h2>Allow camera and microphone</h2>
+      <p>DEXA Meeting needs browser permission so other participants can see and hear you. You can turn either one off after joining.</p>
+      <div class="dialog-actions"><button value="cancel" class="ghost-button">Cancel</button><button id="allowMediaButton" value="default" class="primary-button">Continue</button></div>
+    </form>
+  </dialog>
+
+  <video id="rawLocalVideo" class="hidden-media" autoplay muted playsinline></video>
+  <canvas id="backgroundCanvas" class="hidden-media" width="960" height="540"></canvas>
+  <canvas id="foregroundCanvas" class="hidden-media" width="960" height="540"></canvas>
+  <canvas id="maskCanvas" class="hidden-media" width="960" height="540"></canvas>
+</body>
+</html>
